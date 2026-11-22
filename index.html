@@ -1,18 +1,186 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#102b46"><title>Gudditheking Loan Management PRO</title><link rel="stylesheet" href="style.css"></head>
-<body><div class="shell">
-<aside class="sidebar"><div class="brand"><div class="logo">G</div><div><b>GUDDITHEKING</b><small>LOAN MANAGEMENT PRO</small></div></div><nav>
-<button class="nav active" data-view="dashboard">▦ <span>Dashboard</span></button><button class="nav" data-view="borrowers">♙ <span>Borrowers</span></button><button class="nav" data-view="loans">▣ <span>Loans</span></button><button class="nav" data-view="repayments">↻ <span>Repayments</span></button><button class="nav" data-view="reports">▤ <span>Reports</span></button><button class="nav" data-view="settings">⚙ <span>Data & Settings</span></button>
-</nav><div class="sidebottom">Local browser edition<br><small>GitHub Pages ready</small></div></aside>
-<main class="main"><header class="topbar"><div><h2 id="pageTitle">Dashboard</h2><small>Loan portfolio workspace</small></div><div class="userbox"><span>●</span> Local workspace</div></header><div class="content">
-<section class="view active" id="dashboard"><div class="intro"><div><h1>Portfolio overview</h1><p>Monitor your loans, collections and outstanding balances.</p></div><button class="btn" onclick="go('loans')">＋ Issue loan</button></div><div class="stats">
-<div class="stat"><small>Total borrowers</small><strong id="vBorrowers">0</strong><em>Registered customers</em></div><div class="stat"><small>Principal issued</small><strong id="vPrincipal">TSh 0</strong><em>Capital disbursed</em></div><div class="stat"><small>Total amount due</small><strong id="vDue">TSh 0</strong><em>Principal + agreed interest</em></div><div class="stat"><small>Total collected</small><strong id="vPaid">TSh 0</strong><em>Recorded repayments</em></div><div class="stat accent"><small>Outstanding</small><strong id="vBalance">TSh 0</strong><em>Remaining to collect</em></div></div>
-<div class="panel"><div class="panelhead"><h3>Collection progress</h3><b id="progressLabel">0%</b></div><div class="progress"><i id="progressBar"></i></div></div><div class="panel"><div class="panelhead"><h3>Recent loan accounts</h3><button class="btn light sm" onclick="go('loans')">View all</button></div><div id="recentLoans"></div></div></section>
-<section class="view" id="borrowers"><div class="intro"><div><h1>Borrower directory</h1><p>Register and manage customer information.</p></div></div><div class="panel"><h3>Register borrower</h3><form id="borrowerForm" class="formgrid"><label>Full name *<input name="name" required></label><label>Phone number *<input name="phone" required placeholder="2557XXXXXXXX"></label><label>National ID (optional)<input name="nid"></label><label>Location / address<input name="address"></label><label class="wide">Notes<textarea name="notes"></textarea></label><div class="wide"><button class="btn">Save borrower</button></div></form></div><div class="panel"><div class="panelhead"><h3>All borrowers</h3><input class="search" placeholder="Search name or phone" oninput="filterTable(this,'borrowerTable')"></div><div class="tablewrap"><table id="borrowerTable"><thead><tr><th>Name</th><th>Phone</th><th>National ID</th><th>Location</th><th>Loans</th><th>Action</th></tr></thead><tbody id="borrowerRows"></tbody></table></div></div></section>
-<section class="view" id="loans"><div class="intro"><div><h1>Loan management</h1><p>Issue a loan and enter the agreed total repayment amount.</p></div></div><div class="panel"><h3>Issue new loan</h3><form id="loanForm" class="formgrid"><label>Borrower *<select name="borrower" id="loanBorrower" required></select></label><label>Principal (TSh) *<input name="principal" type="number" min="1" step="1" required></label><label>Interest value<input name="interest" type="number" min="0" step=".01" value=".5"></label><label>Total amount due (TSh) *<input name="total" type="number" min="1" step="1" required></label><label>Issue date *<input name="issue" type="date" required></label><label>Due date<input name="due" type="date"></label><label class="wide">Notes<textarea name="notes"></textarea></label><div class="wide"><button class="btn">Issue loan</button></div></form><p class="hint">Interest formula is not assumed. Enter the total agreed amount due.</p></div><div class="panel"><div class="panelhead"><h3>Loan register</h3><input class="search" placeholder="Search loan or borrower" oninput="filterTable(this,'loanTable')"></div><div class="tablewrap"><table id="loanTable"><thead><tr><th>Loan #</th><th>Borrower</th><th>Issue date</th><th>Principal</th><th>Total due</th><th>Collected</th><th>Balance</th><th>Status</th></tr></thead><tbody id="loanRows"></tbody></table></div></div></section>
+<html lang="en">
+    <head>
+        <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta name="theme-color" content="#102b46">
+        <title>Gudditheking Loan Management PRO</title>
+        <link rel="stylesheet" href="style.css"></head>
+<body>
+    <div class="shell">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="logo">G</div>
+                <div><b>GUDDITHEKING</b><small>LOAN MANAGEMENT PRO</small></div></div>
+                <nav>
+                    <button class="nav active" data-view="dashboard">▦ <span>Dashboard</span></button>
+                    <button class="nav" data-view="borrowers">♙ <span>Borrowers</span></button>
+                    <button class="nav" data-view="loans">▣ <span>Loans</span></button>
+                    <button class="nav" data-view="repayments">↻ <span>Repayments</span></button>
+                    <button class="nav" data-view="reports">▤ <span>Reports</span></button>
+                    <button class="nav" data-view="settings">⚙ <span>Data & Settings</span></button>
+                </nav>
+                <div class="sidebottom">Data are stored permanently<br><small>All right are reserved</small></div>
+            </aside>
+            <main class="main">
+                <header class="topbar">
+                    <div>
+                        <h2 id="pageTitle">Dashboard</h2>
+                        <small>Loan portfolio workspace</small>
+                    </div>
+                    <div class="userbox">
+                        <span>●</span> Administrator Only
+                    </div>
+                </header>
+                <div class="content">
+                    <section class="view active" id="dashboard">
+                        <div class="intro">
+                            <div>
+                                <h1>Portfolio overview</h1>
+                                <p>Monitor your loans, collections and outstanding balances.</p>
+                            </div>
+                            <button class="btn" onclick="go('loans')">＋ Issue loan</button>
+                        </div>
+                        <div class="stats">
+                            <div class="stat">
+                                <small>Total borrowers</small>
+                                <strong id="vBorrowers">0</strong>
+                                <em>Registered customers</em>
+                            </div>
+                            <div class="stat">
+                                <small>Principal issued</small>
+                                <strong id="vPrincipal">TSh 0</strong>
+                                <em>Capital disbursed</em>
+                            </div>
+                            <div class="stat">
+                                <small>Total amount due</small>
+                                <strong id="vDue">TSh 0</strong>
+                                <em>Principal + agreed interest(interest value*principal)</em>
+                            </div>
+                            <div class="stat">
+                                <small>Total collected</small>
+                                <strong id="vPaid">TSh 0</strong>
+                                <em>Recorded repayments</em>
+                            </div>
+                            <div class="stat accent">
+                                <small>Outstanding</small>
+                                <strong id="vBalance">TSh 0</strong>
+                                <em>Remaining to collect</em>
+                            </div>
+                        </div>
+                        <div class="panel">
+                            <div class="panelhead">
+                                <h3>Collection progress</h3>
+                                <b id="progressLabel">0%</b>
+                            </div>
+                            <div class="progress">
+                                <i id="progressBar"></i>
+                            </div>
+                        </div>
+                        <div class="panel">
+                            <div class="panelhead">
+                                <h3>Recent loan accounts</h3>
+                                <button class="btn light sm" onclick="go('loans')">View all</button>
+                            </div>
+                            <div id="recentLoans"></div>
+                        </div>
+                    </section>
+                    <section class="view" id="borrowers">
+                        <div class="intro">
+                            <div>
+                                <h1>Borrower directory</h1>
+                                <p>Register and manage customer information.</p>
+                            </div>
+                        </div>
+                        <div class="panel">
+                            <h3>Register borrower</h3>
+                            <form id="borrowerForm" class="formgrid">
+                                <label>Full name *<input name="name" required></label>
+                                <label>Phone number *<input name="phone" required placeholder="2557XXXXXXXX" maxlength="12"></label>
+                                <label>National ID *<input name="nid" required maxlength="20"></label>
+                                <label>Location / address<input name="address"></label>
+                                <label class="wide">Notes<textarea name="notes"></textarea></label>
+                                <div class="wide">
+                                    <button class="btn">Save borrower</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="panel">
+                            <div class="panelhead">
+                                <h3>All borrowers</h3>
+                                <input class="search" placeholder="Search name or phone" oninput="filterTable(this,'borrowerTable')">
+                            </div>
+                            <div class="tablewrap">
+                                <table id="borrowerTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Phone</th>
+                                            <th>National ID</th>
+                                            <th>Location</th>
+                                            <th>Loans</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="borrowerRows"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="view" id="loans">
+                        <div class="intro">
+                            <div>
+                                <h1>Loan management</h1>
+                                <p>Issue a loan and enter the agreed total repayment amount.</p>
+                            </div>
+                        </div>
+                        <div class="panel">
+                            <h3>Issue new loan</h3>
+                            <form id="loanForm" class="formgrid">
+                                <label>Borrower *<select name="borrower" id="loanBorrower" required></select></label>
+                                <label>Principal (TSh) *<input name="principal" type="number" min="10000" step="5000" required></label>
+                                <label>Interest value<input name="interest" type="number" min="0.2" step="0.1" value="0.5" readonly></label>
+                                <label>Total amount due (TSh) *<input name="total" type="number" min="1" step="1" required></label>
+                                <label>Issue date *<input name="issue" type="date" required></label>
+                                <label>Due date<input name="due" type="date"></label>
+                                <label class="wide">Notes<textarea name="notes"></textarea>
+                                </label>
+                                <div class="wide">
+                                    <button class="btn">Issue loan</button>
+                                </div>
+                            </form>
+                            <p class="hint">Interest formula is not assumed. Enter the total agreed amount due.</p>
+                        </div>
+                        <div class="panel">
+                            <div class="panelhead">
+                                <h3>Loan register</h3>
+                                <input class="search" placeholder="Search loan or borrower" oninput="filterTable(this,'loanTable')">
+                            </div>
+                            <div class="tablewrap">
+                                <table id="loanTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Loan #</th>
+                                            <th>Borrower</th>
+                                            <th>Issue date</th>
+                                            <th>Principal</th>
+                                            <th>Total due</th>
+                                            <th>Collected</th>
+                                            <th>Balance</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="loanRows"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
 <section class="view" id="repayments"><div class="intro"><div><h1>Daily repayments</h1><p>Record a collection against a loan and select its schedule day.</p></div></div><div class="panel"><h3>Record repayment</h3><form id="repayForm" class="formgrid"><label>Loan account *<select name="loan" id="repayLoan" required></select></label><label>Amount received (TSh) *<input name="amount" type="number" min="1" step="1" required></label><label>Collection date *<input name="date" type="date" required></label><label>Schedule day<select name="day" id="repayDay"></select></label><label>Receipt / reference<input name="ref"></label><label>Notes<input name="notes"></label><div class="wide"><button class="btn">Save repayment</button></div></form></div><div class="panel"><div class="panelhead"><h3>Repayment history</h3><button class="btn light sm" onclick="print()">Print</button></div><div class="tablewrap"><table><thead><tr><th>Date</th><th>Borrower</th><th>Loan #</th><th>Day</th><th>Amount</th><th>Reference</th></tr></thead><tbody id="repaymentRows"></tbody></table></div></div></section>
 <section class="view" id="reports"><div class="intro"><div><h1>Financial reports</h1><p>Portfolio balances and collection performance.</p></div><button class="btn" onclick="print()">Print / Save PDF</button></div><div class="stats four"><div class="stat"><small>Principal</small><strong id="rPrincipal">TSh 0</strong></div><div class="stat"><small>Total due</small><strong id="rDue">TSh 0</strong></div><div class="stat"><small>Collected</small><strong id="rPaid">TSh 0</strong></div><div class="stat accent"><small>Outstanding</small><strong id="rBalance">TSh 0</strong></div></div><div class="panel"><div class="panelhead"><h3>Borrower statements</h3><input class="search" placeholder="Search borrower" oninput="filterTable(this,'statementTable')"></div><div class="tablewrap"><table id="statementTable"><thead><tr><th>Borrower</th><th>Phone</th><th>Loans</th><th>Total due</th><th>Collected</th><th>Balance</th><th>Statement</th></tr></thead><tbody id="statementRows"></tbody></table></div></div></section>
-<section class="view" id="settings"><div class="intro"><div><h1>Data & settings</h1><p>Back up your data or restore it on this browser.</p></div></div><div class="panel"><h3>Backup and restore</h3><p class="muted">Your data is stored in this browser. Download a backup frequently. To move records to another computer, download the JSON backup and restore it there.</p><div class="actions"><button class="btn" onclick="backup()">Download JSON backup</button><button class="btn light" onclick="document.getElementById('restoreFile').click()">Restore backup</button><input type="file" id="restoreFile" accept=".json,application/json" hidden></div></div><div class="panel"><h3>Excel / CSV export</h3><p class="muted">Download borrower, loan and repayment records as CSV files that open in Excel.</p><div class="actions"><button class="btn light" onclick="exportCSV('borrowers')">Export borrowers</button><button class="btn light" onclick="exportCSV('loans')">Export loans</button><button class="btn light" onclick="exportCSV('repayments')">Export repayments</button></div></div><div class="panel"><h3>Workbook compatibility</h3><p class="muted">Based on MAREJESHO YA MKOPO KWA SIKU 30: S/N, FULL NAME, NAMBA YA SIMU, KIASI CHA MKOPO, RIBA, JUMLA YA MKOPO, daily columns 1–31 and JUMLA YA MAREJESHO. Schedule day is captured for each repayment.</p></div><div class="panel dangerpanel"><h3>Clear local data</h3><p class="muted">Permanently delete records stored in this browser.</p><button class="btn red" onclick="clearData()">Delete all data</button></div></section>
-</div><footer>© <span id="year"></span> Gudditheking · Loan Management PRO · GitHub Pages Edition</footer></main></div>
+<section class="view" id="settings"><div class="intro"><div><h1>Data & settings</h1><p>Back up your data or restore it on this browser.</p></div></div><div class="panel"><h3>Backup and restore</h3><p class="muted">Your data is stored in this browser. Download a backup frequently. To move records to another computer, download the JSON backup and restore it there.</p><div class="actions"><button class="btn" onclick="backup()">Download JSON backup</button><button class="btn light" onclick="document.getElementById('restoreFile').click()">Restore backup</button><input type="file" id="restoreFile" accept=".json,application/json" hidden></div></div><div class="panel"><h3>Excel / CSV export</h3><p class="muted">Download borrower, loan and repayment records as CSV files that open in Excel.</p><div class="actions"><button class="btn light" onclick="exportCSV('borrowers')">Export borrowers</button><button class="btn light" onclick="exportCSV('loans')">Export loans</button><button class="btn light" onclick="exportCSV('repayments')">Export repayments</button></div></div><div class="panel"><h3>Workbook compatibility</h3><p class="muted">Based on MAREJESHO YA MKOPO KWA SIKU 30: S/N, FULL NAME, NAMBA YA SIMU, KIASI CHA MKOPO, RIBA, JUMLA YA MKOPO, daily columns 1–31 and JUMLA YA MAREJESHO. Schedule day is captured for each repayment.</p></div><div class="panel dangerpanel"><h3>Clear local data</h3><p class="muted">Permanently delete records stored in this browser.</p><button class="btn red" onclick="clearData()">Delete all data</button></div>
+</section>
+</div>
+<footer>© <span id="year"></span> Gudditheking · Loan Management System · All right are reserved</footer>
+</main>
+</div>
 <div class="toast" id="toast"></div>
-<script src="app.js"></script></body></html>
+<script src="assets/app.js"></script></body></html>
